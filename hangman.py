@@ -93,8 +93,8 @@ class Hangman(tk.Frame):
         # Create hangman
         if doom_counter == 1:
             self.c.create_oval(180,150,220,190) # Head
-            self.c.create_oval(194,164,196,166) # Left eye
-            self.c.create_oval(204,164,206,166) # Right eye
+            self.left_eye = self.c.create_oval(194,164,196,166) # Left eye
+            self.right_eye = self.c.create_oval(204,164,206,166) # Right eye
             self.mouth = self.c.create_line(192,177,208,177) # Mouth
         elif doom_counter == 2:
             self.c.create_line(200,190,200,250) # Torso
@@ -109,6 +109,12 @@ class Hangman(tk.Frame):
             self.c.create_text(250,50,text='You Lose!', font=("Purisa", 30), fill='red', anchor=tk.CENTER)
             self.c.delete(self.mouth)
             self.c.create_arc(190,175,210,190,start=0, extent=180)
+            self.c.delete(self.left_eye)
+            self.c.create_line(192,162,198,168)
+            self.c.create_line(192,168,198,162)
+            self.c.delete(self.right_eye)
+            self.c.create_line(202,162,208,168)
+            self.c.create_line(202,168,208,162)
 
 
     def checkLetter(self,index,doom_counter):
