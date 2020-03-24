@@ -14,7 +14,8 @@ class Hangman(tk.Frame):
         self.master.title('Hangman Game')
         self.grid()
 
-        self.count = 0
+        self.doom_counter = 0
+        self.success_counter = 0
 
         self.letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
@@ -55,7 +56,7 @@ class Hangman(tk.Frame):
             return word
 
         self.word = generate_word()
-        print(self.word)
+        print(self.word, len(self.word))
         word_dic = {}
 
         size = 1
@@ -77,7 +78,7 @@ class Hangman(tk.Frame):
         for index in range(len(self.letters)):
             letter = self.letters[index]
             dic[self.letters[index]] = index
-            button = tk.Button(bottom_frame, text=letter, command=lambda index=index, n=letter: self.checkLetter(index,self.count), height=size, width=size)
+            button = tk.Button(bottom_frame, text=letter, command=lambda index=index, n=letter: self.checkLetter(index,self.doom_counter), height=size, width=size)
             button.grid(padx=3,pady=1, row=int(np.floor(index/10)+3), column=index%10)
             buttons.append(button)
         self.buttons = buttons
@@ -88,24 +89,26 @@ class Hangman(tk.Frame):
 
         return buttons
 
-    def drawLimb(self, count):
+    def drawLimb(self, doom_counter):
         """Makes a new limb appear if the user guesses an incorrect letter."""
         # Create hangman
-        if count == 1:
+        if doom_counter == 1:
             self.c.create_oval(180,150,220,190) # Head
-        elif count == 2:
+        elif doom_counter == 2:
             self.c.create_line(200,190,200,250) # Torso
-        elif count == 3:
+        elif doom_counter == 3:
             self.c.create_line(200,200,220,230) # Right arm
-        elif count == 4:
+        elif doom_counter == 4:
             self.c.create_line(200,200,180,230) # Left arm
-        elif count == 5:
+        elif doom_counter == 5:
             self.c.create_line(200,250,185,280) # Left leg
-        elif count == 6:
+        elif doom_counter == 6:
             self.c.create_line(200,250,215,280) # Right leg
+        else:
+            self.c.create_text(250,50,text='You Lose!', font=("Purisa", 30), fill='red', anchor=tk.CENTER)
 
 
-    def checkLetter(self,index,count):
+    def checkLetter(self,index,doom_counter):
         """Checks the letter that the user guesses to see if it is correct."""
         self.buttons[index].config(state="disabled")
         f = True
@@ -113,9 +116,12 @@ class Hangman(tk.Frame):
             if letter == self.letters[index]:
                 self.word_buttons[i].config(text=letter)
                 f = False
+                self.success_counter += 1
+                if self.success_counter == len(self.word):
+                    self.c.create_text(250,50,text='You Win!', font=("Purisa", 30), fill='green', anchor=tk.CENTER)
         if f:
-            self.count+=1
-            self.drawLimb(self.count)
+            self.doom_counter+=1
+            self.drawLimb(self.doom_counter)
 
 def main():
 
