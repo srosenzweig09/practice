@@ -1,6 +1,8 @@
 import tkinter as tk
 import numpy as np
 from random_word import RandomWords
+import sys
+import os
 
 class Hangman(tk.Frame):
 
@@ -12,6 +14,7 @@ class Hangman(tk.Frame):
         
     def initUI(self):
         self.master.title('Hangman Game')
+        self.master.geometry("500x700")
         self.grid()
 
         self.doom_counter = 0
@@ -44,6 +47,8 @@ class Hangman(tk.Frame):
         spacer1.grid(row = 4)
         spacer2= tk.Label(top_frame, text = "")
         spacer2.grid(row = 5)
+        spacer3= tk.Label(bottom_frame, text = "")
+        spacer3.grid(row = 6)
         
 
         # Generate random words and draw one.
@@ -56,7 +61,6 @@ class Hangman(tk.Frame):
             return word
 
         self.word = generate_word()
-        print(self.word, len(self.word))
         word_dic = {}
 
         size = 1
@@ -82,11 +86,16 @@ class Hangman(tk.Frame):
             buttons.append(button)
         self.buttons = buttons
 
+
         # Create End Game button
-        stop = tk.Button(self, text='End Game', height=size, width=25, command=self.destroy)
+        stop = tk.Button(self, text='Restart Game', height=size, width=25, command=self.stopButton)
         stop.grid(row=3,column=0, columnspan = 10)
 
         return buttons
+
+    def stopButton(self):
+            self.destroy()
+            self.__init__()
 
     def drawLimb(self, doom_counter):
         """Makes a new limb appear if the user guesses an incorrect letter."""
@@ -115,6 +124,8 @@ class Hangman(tk.Frame):
             self.c.delete(self.right_eye)
             self.c.create_line(202,162,208,168)
             self.c.create_line(202,168,208,162)
+            for i,letter in enumerate(self.word):
+                self.word_buttons[i].config(text=letter)
 
 
     def checkLetter(self,index,doom_counter):
@@ -133,6 +144,7 @@ class Hangman(tk.Frame):
         if f:
             self.doom_counter+=1
             self.drawLimb(self.doom_counter)
+
 
 def main():
 
